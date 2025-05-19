@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -12,6 +13,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Http\JsonResponse;
+
 
 class RegisteredUserController extends Controller
 {
@@ -32,7 +35,37 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+        $customerRole = Role::where('name', 'customer')->first();
+        if ($customerRole) {
+            $user->roles()->attach($customerRole);
+        }
+
+        event(new Registered($user));
+
+        Auth::login($user);
+
+        return redirect(route('dashboard', absolute: false));
+    }
+
+    /**
+     * Handle an API registration request.
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function storeApi(Request $request): JsonResponse
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -42,10 +75,22 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        // Find the customer role and assign it to the new user
+        $customerRole = Role::where('name', 'customer')->first();
+        if ($customerRole) {
+            $user->roles()->attach($customerRole);
+        }
+
         event(new Registered($user));
 
-        Auth::login($user);
+        // Create token for API authentication
+        $token = $user->createToken('auth_token')->plainTextToken;
 
-        return redirect(route('dashboard', absolute: false));
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User registered successfully',
+            'user' => $user,
+            'token' => $token,
+        ], 201);
     }
 }

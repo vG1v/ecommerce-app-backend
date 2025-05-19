@@ -13,17 +13,15 @@ use App\Models\User;
 
 class AuthenticatedSessionController extends Controller
 {
-    /**
-     * Display the login view.
-     */
+    // Display the login view.
+    
     public function create(): View
     {
         return view('auth.login');
     }
 
-    /**
-     * Handle an incoming authentication request.
-     */
+    // Handle an incoming authentication request.
+    
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
@@ -33,9 +31,8 @@ class AuthenticatedSessionController extends Controller
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
-    /**
-     * Destroy an authenticated session.
-     */
+    // Destroy an authenticated session.
+     
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
@@ -47,9 +44,8 @@ class AuthenticatedSessionController extends Controller
         return redirect('/');
     }
 
-    /**
-     * Handle an API authentication request.
-     */
+    // Handle an API authentication request.
+  
     public function apiLogin(Request $request): JsonResponse
     {
         $request->validate([
@@ -75,9 +71,9 @@ class AuthenticatedSessionController extends Controller
         ]);
     }
 
-    /**
-     * Logout the user from API access.
-     */
+
+//    Logout the user from API access.
+
     public function apiLogout(Request $request): JsonResponse
     {
         // Revoke the token that was used for authentication

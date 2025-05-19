@@ -14,9 +14,8 @@ use Inertia\Response;
 
 class ProfileController extends Controller
 {
-    /**
-     * Display the user's profile form.
-     */
+    // Display the user's profile form.
+   
     public function edit(Request $request): Response
     {
         return Inertia::render('Profile/Edit', [
@@ -25,9 +24,8 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
-     * Update the user's profile information.
-     */
+    // Update the user's profile information.
+   
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $request->user()->fill($request->validated());
@@ -41,9 +39,8 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit');
     }
 
-    /**
-     * Delete the user's account.
-     */
+    // Delete the user's account.
+    
     public function destroy(Request $request): RedirectResponse
     {
         $request->validate([
@@ -62,9 +59,8 @@ class ProfileController extends Controller
         return Redirect::to('/');
     }
 
-    /**
-     * Update the user's profile information via API.
-     */
+    // Update the user's profile information via API.
+    
     public function apiUpdate(ProfileUpdateRequest $request): JsonResponse
     {
         $user = $request->user();
@@ -83,9 +79,8 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
-     * Delete the user's account via API.
-     */
+    // Delete the user's account via API.
+    
     public function apiDestroy(Request $request): JsonResponse
     {
         $request->validate([
