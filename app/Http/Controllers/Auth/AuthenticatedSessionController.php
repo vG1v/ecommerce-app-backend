@@ -49,20 +49,28 @@ class AuthenticatedSessionController extends Controller
     public function apiLogin(Request $request): JsonResponse
     {
         $request->validate([
-            'email' => ['required', 'string', 'email'],
+            'login' => ['required', 'string'],  // Can be email or phone
             'password' => ['required', 'string'],
         ]);
 
-        if (!Auth::attempt($request->only('email', 'password'))) {
+        // Determine if login is email or phone
+        $loginField = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone_number';
+        
+        $credentials = [
+            $loginField => $request->login,
+            'password' => $request->password,
+        ];
+
+        if (!Auth::attempt($credentials)) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Invalid credentials'
             ], 401);
         }
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where($loginField, $request->login)->first();
         $token = $user->createToken('auth_token')->plainTextToken;
-
+        
         return response()->json([
             'status' => 'success',
             'message' => 'Login successful',

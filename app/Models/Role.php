@@ -38,4 +38,6 @@ class Role extends Model
             static::firstOrCreate(['name' => $role['name']], $role);
         }
     }
+
+    
 }

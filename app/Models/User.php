@@ -19,6 +19,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone_number',
         'password',
     ];
 
@@ -56,7 +57,7 @@ class User extends Authenticatable
     /**
      * Check if the user has a specific role.
      */
-    public function hasRole($roleName)
+    public function hasRole($roleName): bool
     {
         return $this->roles()->where('name', $roleName)->exists();
     }
@@ -71,5 +72,21 @@ class User extends Authenticatable
         }
         
         $this->roles()->syncWithoutDetaching($role);
+    }
+
+    /**
+     * Get the vendor associated with the user.
+     */
+    public function vendor()
+    {
+        return $this->hasOne(Vendor::class);
+    }
+
+    /**
+     * Check if user is a vendor.
+     */
+    public function isVendor(): bool
+    {
+        return $this->hasRole('vendor');
     }
 }
