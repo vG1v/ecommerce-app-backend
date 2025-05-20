@@ -42,3 +42,8 @@ Route::prefix('admin')->group(function () {
         Route::post('/register', [AdminAuthenticatedSessionController::class, 'register']); // Add this line
     });
 });
+
+// In routes/api.php
+Route::get('/ping', function () {
+    return response()->json(['message' => 'pong']);
+});
