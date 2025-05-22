@@ -89,4 +89,52 @@ class User extends Authenticatable
     {
         return $this->hasRole('vendor');
     }
+
+    /**
+     * Get the orders associated with the user.
+     */
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    /**
+     * Get the cart associated with the user.
+     */
+    public function cart()
+    {
+        return $this->hasOne(Cart::class);
+    }
+
+    /**
+     * Get the wishlist associated with the user.
+     */
+    public function wishlist()
+    {
+        return $this->hasOne(Wishlist::class);
+    }
+
+    /**
+     * Get the count of items in the cart.
+     */
+    public function getCartItemsCount()
+    {
+        return $this->cart ? $this->cart->items->sum('quantity') : 0;
+    }
+
+    /**
+     * Get the count of items in the wishlist.
+     */
+    public function getWishlistItemsCount()
+    {
+        return $this->wishlist ? $this->wishlist->items->count() : 0;
+    }
+
+    /**
+     * Get the total amount spent by the user on completed orders.
+     */
+    public function getTotalSpent()
+    {
+        return $this->orders()->where('status', 'completed')->sum('total_amount');
+    }
 }

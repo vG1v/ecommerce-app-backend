@@ -12,9 +12,7 @@ use Illuminate\Support\Facades\Auth;
 
 class VendorController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Display a listing of the resource.
     public function index()
     {
         $vendors = Vendor::with('user')->paginate(10);
@@ -25,17 +23,13 @@ class VendorController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // Show the form for creating a new resource.
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Store a newly created resource in storage.
     public function store(Request $request)
     {
         $request->validate([
@@ -106,9 +100,8 @@ class VendorController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
+    // Display the specified resource.
+
     public function show(Vendor $vendor)
     {
         // Load related user data
@@ -120,17 +113,15 @@ class VendorController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+    // Show the form for editing the specified resource.
+
     public function edit(Vendor $vendor)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    //Update the specified resource in storage.
+
     public function update(Request $request, Vendor $vendor)
     {
         // Check if user owns this vendor profile or is admin
@@ -175,9 +166,8 @@ class VendorController extends Controller
         ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    //Remove the specified resource from storage.
+
     public function destroy(Vendor $vendor)
     {
         // Check if user owns this vendor profile or is admin
@@ -196,9 +186,8 @@ class VendorController extends Controller
         ]);
     }
     
-    /**
-     * Get vendor dashboard stats
-     */
+    // Get vendor dashboard stats
+
     public function dashboard()
     {
         $user = Auth::user();

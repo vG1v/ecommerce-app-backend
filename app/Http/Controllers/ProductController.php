@@ -11,9 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Display a listing of the resource.
     public function index()
     {
         // Get products with vendor information
@@ -25,17 +23,13 @@ class ProductController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // Show the form for creating a new resource.
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Store a newly created resource in storage.
     public function store(Request $request)
     {
         // Validate the request
@@ -110,9 +104,7 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
+    // Display the specified resource.
     public function show(Product $product)
     {
         // Load the vendor information
@@ -124,17 +116,13 @@ class ProductController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+    // Show the form for editing the specified resource.
     public function edit(Product $product)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    // Update the specified resource in storage.
     public function update(Request $request, Product $product)
     {
         // Check if user owns this product
@@ -187,9 +175,7 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // Remove the specified resource from storage.
     public function destroy(Product $product)
     {
         // Check if user owns this product
@@ -230,9 +216,8 @@ class ProductController extends Controller
         }
     }
     
-    /**
-     * Get vendor's products
-     */
+    // Get vendor's products
+
     public function vendorProducts()
     {
         $user = Auth::user();
