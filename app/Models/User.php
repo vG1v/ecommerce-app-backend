@@ -137,4 +137,21 @@ class User extends Authenticatable
     {
         return $this->orders()->where('status', 'completed')->sum('total_amount');
     }
+
+    /**
+     * Get all images for the user.
+     */
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
+
+    /**
+     * Get the profile image for the user.
+     */
+    public function profileImage()
+    {
+        return $this->morphOne(Image::class, 'imageable')
+            ->where('type', 'profile');
+    }
 }

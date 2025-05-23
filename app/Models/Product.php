@@ -84,4 +84,32 @@ class Product extends Model
     {
         return $this->stock_quantity > 0;
     }
+
+    /**
+     * Get all images for the product.
+     */
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable')
+            ->orderBy('sort_order');
+    }
+
+    /**
+     * Get the main image for the product.
+     */
+    public function mainImage()
+    {
+        return $this->morphOne(Image::class, 'imageable')
+            ->where('type', 'main');
+    }
+
+    /**
+     * Get gallery images for the product.
+     */
+    public function galleryImages()
+    {
+        return $this->morphMany(Image::class, 'imageable')
+            ->where('type', 'gallery')
+            ->orderBy('sort_order');
+    }
 }

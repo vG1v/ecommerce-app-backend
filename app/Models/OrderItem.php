@@ -19,17 +19,13 @@ class OrderItem extends Model
         'subtotal'
     ];
 
-    /**
-     * Get the order that owns the item.
-     */
+    // Get the order that owns the item.
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
     }
 
-    /**
-     * Get the product associated with this item.
-     */
+    // Get the product associated with this item.
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
