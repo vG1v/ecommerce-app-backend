@@ -105,10 +105,16 @@ class ProductController extends Controller
     }
 
     // Display the specified resource.
-    public function show(Product $product)
+    public function show($id)
     {
-        // Load the vendor information
-        $product->load('vendor');
+        $product = Product::with('vendor')->find($id);
+        
+        if (!$product) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Product not found'
+            ], 404);
+        }
         
         return response()->json([
             'status' => 'success',
@@ -217,7 +223,6 @@ class ProductController extends Controller
     }
     
     // Get vendor's products
-
     public function vendorProducts()
     {
         $user = Auth::user();
@@ -235,6 +240,100 @@ class ProductController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $products
+        ]);
+    }
+    
+    /**
+     * Search and filter products
+     */
+    public function search(Request $request)
+    {
+        $query = Product::query()->with('vendor')->where('status', 'published');
+        
+        // Search by keyword/term
+        if ($request->has('q')) {
+            $searchTerm = $request->q;
+            $query->where(function($query) use ($searchTerm) {
+                $query->where('name', 'like', "%{$searchTerm}%")
+                      ->orWhere('description', 'like', "%{$searchTerm}%")
+                      ->orWhere('short_description', 'like', "%{$searchTerm}%");
+            });
+        }
+        
+        // Filter by price range
+        if ($request->has('min_price')) {
+            $query->where('price', '>=', $request->min_price);
+        }
+        
+        if ($request->has('max_price')) {
+            $query->where('price', '<=', $request->max_price);
+        }
+        
+        // Filter by vendor
+        if ($request->has('vendor_id')) {
+            $query->where('vendor_id', $request->vendor_id);
+        }
+        
+        // Filter by featured status
+        if ($request->has('featured')) {
+            $query->where('featured', true);
+        }
+        
+        // Filter by stock status
+        if ($request->has('in_stock')) {
+            $query->where('stock_quantity', '>', 0);
+        }
+        
+        // Sort products
+        $sortField = $request->sort_by ?? 'created_at';
+        $sortDirection = $request->sort_direction ?? 'desc';
+        $allowedSortFields = ['name', 'price', 'created_at'];
+        
+        if (in_array($sortField, $allowedSortFields)) {
+            $query->orderBy($sortField, $sortDirection);
+        }
+        
+        // Paginate results
+        $products = $query->paginate($request->per_page ?? 12);
+        
+        return response()->json([
+            'status' => 'success',
+            'data' => $products
+        ]);
+    }
+    
+    /**
+     * Get featured products
+     */
+    public function featured()
+    {
+        $featuredProducts = Product::where('featured', true)
+                              ->where('status', 'published')
+                              ->with('vendor')
+                              ->take(8)
+                              ->get();
+    
+        return response()->json([
+            'status' => 'success',
+            'data' => $featuredProducts
+        ]);
+    }
+    
+    /**
+     * Get related products
+     */
+    public function related(Product $product)
+    {
+        // Get products from the same vendor
+        $relatedProducts = Product::where('vendor_id', $product->vendor_id)
+                            ->where('id', '!=', $product->id)
+                            ->where('status', 'published')
+                            ->take(4)
+                            ->get();
+    
+        return response()->json([
+            'status' => 'success',
+            'data' => $relatedProducts
         ]);
     }
 }
