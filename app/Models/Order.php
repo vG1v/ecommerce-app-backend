@@ -11,6 +11,13 @@ class Order extends Model
 {
     use HasFactory;
 
+    // Order status constants that match your database enum
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_PROCESSING = 'processing';
+    public const STATUS_COMPLETED = 'completed';
+    public const STATUS_DECLINED = 'declined';
+    public const STATUS_CANCELLED = 'cancelled';
+
     protected $fillable = [
         'user_id', 'order_number', 'status', 'total_amount',
         'tax_amount', 'shipping_amount', 'discount_amount',
@@ -44,5 +51,57 @@ class Order extends Model
         $lastNumber = intval(substr($lastOrderNumber, -4));
         
         return $orderNumber . str_pad(($lastNumber + 1), 4, '0', STR_PAD_LEFT);
+    }
+    
+    // Get all available order statuses
+    public static function getStatuses(): array
+    {
+        return [
+            self::STATUS_PENDING,
+            self::STATUS_PROCESSING,
+            self::STATUS_COMPLETED,
+            self::STATUS_DECLINED,
+            self::STATUS_CANCELLED,
+        ];
+    }
+    
+    // Check if order can be cancelled
+    public function canBeCancelled(): bool
+    {
+        return in_array($this->status, [
+            self::STATUS_PENDING,
+            self::STATUS_PROCESSING
+        ]);
+    }
+    
+    // Cancel the order
+    public function cancel(): bool
+    {
+        if (!$this->canBeCancelled()) {
+            return false;
+        }
+        
+        $this->status = self::STATUS_CANCELLED;
+        return $this->save();
+    }
+    
+    // Check if order is completed
+    public function isCompleted(): bool
+    {
+        return $this->status === self::STATUS_COMPLETED;
+    }
+    
+    // Get human-readable status label
+    public function getStatusLabel(): string
+    {
+        $labels = [
+            self::STATUS_PENDING => 'Pending',
+            self::STATUS_PROCESSING => 'Processing',
+            self::STATUS_COMPLETED => 'Completed',
+            self::STATUS_DECLINED => 'Declined',
+            self::STATUS_CANCELLED => 'Cancelled',
+        ];
+        
+        return $labels[$this->status] ?? ucfirst($this->status);
     }
 }
