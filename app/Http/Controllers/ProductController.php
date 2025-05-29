@@ -328,7 +328,7 @@ class ProductController extends Controller
         $relatedProducts = Product::where('vendor_id', $product->vendor_id)
                             ->where('id', '!=', $product->id)
                             ->where('status', 'published')
-                            ->take(4)
+                            ->take(8)
                             ->get();
     
         return response()->json([

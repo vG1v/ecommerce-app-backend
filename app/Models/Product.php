@@ -25,7 +25,7 @@ class Product extends Model
         'price',
         'sale_price',
         'on_sale',
-        'sku',  // Required field that was missing
+        'sku',
         'stock_quantity',
         'low_stock_threshold',
         'stock_status',

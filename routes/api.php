@@ -18,9 +18,10 @@ use Illuminate\Support\Facades\Route;
 
 // User Routes
 // Public API routes
-Route::get('/products/search', [ProductController::class, 'search']);     // ✅ Specific routes first
-Route::get('/products/featured', [ProductController::class, 'featured']); // ✅ Specific routes first
-Route::get('/products/{id}', [ProductController::class, 'show']);         // Then parameter routes
+Route::get('/products', [ProductController::class, 'index']);
+Route::get('/products/search', [ProductController::class, 'search']);    
+Route::get('/products/featured', [ProductController::class, 'featured']);
+Route::get('/products/{id}', [ProductController::class, 'show']); 
 Route::get('/products/{product}/related', [ProductController::class, 'related']);
 
 // Auth API routes
@@ -45,7 +46,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/cart/items/{id}', [CartController::class, 'removeItem']);
     Route::delete('/cart/clear', [CartController::class, 'clear']);
     Route::get('/cart/count', [CartController::class, 'getCount']);
-    
+
     // Wishlist routes
     Route::get('/wishlist', [WishlistController::class, 'index']);
     Route::post('/wishlist/add', [WishlistController::class, 'addItem']);
@@ -118,3 +119,5 @@ Route::prefix('admin')->group(function () {
 Route::get('/ping', function () {
     return response()->json(['message' => 'pong']);
 });
+
+// Add this route to display all products
