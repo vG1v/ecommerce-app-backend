@@ -9,7 +9,10 @@
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
+        "laravel/socialite": "^5.21",
         "laravel/tinker": "^2.9",
+        "symfony/http-client": "^7.3",
+        "symfony/mailgun-mailer": "^7.3",
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {

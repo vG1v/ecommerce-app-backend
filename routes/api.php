@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\AdminOrderController;
 use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminVendorController;
+use App\Http\Controllers\Auth\GoogleController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -27,6 +28,9 @@ Route::get('/products/{product}/related', [ProductController::class, 'related'])
 // Auth API routes
 Route::post('/register', [RegisteredUserController::class, 'storeApi']);
 Route::post('/login', [AuthenticatedSessionController::class, 'apiLogin']); 
+
+// Google Auth API routes
+Route::post('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 // Protected API routes
 Route::middleware('auth:sanctum')->group(function () {
